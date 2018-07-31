@@ -17,16 +17,14 @@ trait HasEncryptedFields
     private static function encryptFields($model)
     {
         foreach (self::$encrypt as $field) {
-            $encrypted = self::encryptString($model->field);
-            $model->$field = $encrypted ?? $model->field;
+            $model->$field = self::encryptString($model->$field);
         }
     }
 
     private static function decryptFields($model)
     {
         foreach (self::$encrypt as $field) {
-            $decrypted = self::decryptString($model->field);
-            $model->$field = $decrypted ?? $model->field;
+            $model->$field = self::decryptString($model->$field);
         }
     }
 
