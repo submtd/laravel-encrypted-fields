@@ -9,6 +9,9 @@ trait HasEncryptedFields
         self::creating(function ($model) {
             self::encryptFields($model);
         });
+        self::updating(function ($model) {
+            self::encryptFields($model);
+        });
         self::retrieved(function ($model) {
             self::decryptFields($model);
         });
