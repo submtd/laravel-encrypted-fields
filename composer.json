@@ -1,0 +1,18 @@
+{
+    "name": "submtd/laravel-encrypted-fields",
+    "description": "Provides a trait that allows for encrypted fields on an Eloquent model",
+    "authors": [
+        {
+            "name": "Steve Harmeyer",
+            "email": "harmeyersteve@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Submtd\\LaravelEncryptedFields\\": "src/"
+        }
+    }
+}
