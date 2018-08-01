@@ -2,8 +2,17 @@
 
 namespace Submtd\LaravelEncryptedFields;
 
+/**
+ * Add this trait to Eloquent models in order to encrypt
+ * fields that are stored in the database.
+ */
 trait HasEncryptedFields
 {
+    /**
+     * boot method for this trait
+     * encrypts fields on creating and updating
+     * decrypts fields on retrieved
+     */
     public static function bootHasEncryptedFields()
     {
         self::creating(function ($model) {
@@ -17,6 +26,10 @@ trait HasEncryptedFields
         });
     }
 
+    /**
+     * loop through the public static $encrypt array on the model
+     * and encrypt any fields defined there
+     */
     private static function encryptFields($model)
     {
         foreach (self::$encrypt as $field) {
@@ -24,6 +37,10 @@ trait HasEncryptedFields
         }
     }
 
+    /**
+     * loop through the public static $encrypt array on the model
+     * and decrypt any fields defined there
+     */
     private static function decryptFields($model)
     {
         foreach (self::$encrypt as $field) {
@@ -31,11 +48,17 @@ trait HasEncryptedFields
         }
     }
 
+    /**
+     * encrypt a string
+     */
     public static function encryptString($string)
     {
         return openssl_encrypt($string, 'AES-128-ECB', env('APP_KEY'));
     }
 
+    /**
+     * decrypt a string
+     */
     public static function decryptString($string)
     {
         return openssl_decrypt($string, 'AES-128-ECB', env('APP_KEY'));
