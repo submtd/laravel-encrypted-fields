@@ -53,7 +53,8 @@ trait HasEncryptedFields
      */
     public static function encryptString($string)
     {
-        return openssl_encrypt($string, 'AES-128-ECB', env('APP_KEY'));
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('AES-128-ECB'));
+        return openssl_encrypt($string, 'AES-128-ECB', env('APP_KEY'), 0, $iv);
     }
 
     /**
@@ -61,6 +62,7 @@ trait HasEncryptedFields
      */
     public static function decryptString($string)
     {
-        return openssl_decrypt($string, 'AES-128-ECB', env('APP_KEY'));
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('AES-128-ECB'));
+        return openssl_decrypt($string, 'AES-128-ECB', env('APP_KEY'), 0, $iv);
     }
 }
