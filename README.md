@@ -9,7 +9,7 @@ composer require submtd/laravel-encrypted-fields
 
 ## Usage
 
-Add the HasEncryptedFields trait to your model class, and add a protected static property called $encrypt containing an array of fields that should be encrypted.
+Add the HasEncryptedFields trait to your model class, and add a protected property called $encrypted containing an array of fields that should be encrypted.
 
 ```
 <?php
@@ -21,12 +21,8 @@ class Person extends Model
 {
     use HasEncryptedFields;
     
-    protected static $encrypt = [
+    protected $encrypted = [
         'social_security_number',
     ];
 }
 ```
-
-## Notes
-
-If you add this trait to a model that already has data, you will need to update the encrypted fields on old data so that they will be encrypted. This trait provides two public static methods to help with this... ```static::encryptString($string)``` and ```static::decryptString($string)```.
