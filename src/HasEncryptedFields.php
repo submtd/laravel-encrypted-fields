@@ -9,60 +9,46 @@ namespace Submtd\LaravelEncryptedFields;
 trait HasEncryptedFields
 {
     /**
-     * boot method for this trait
-     * encrypts fields on creating and updating
-     * decrypts fields on retrieved
-     */
-    public static function bootHasEncryptedFields()
+    * If the attribute is in the encrypted array
+    * then decrypt it.
+    * @param $key
+    * @return mixed
+    */
+    public function getAttribute($key)
     {
-        self::creating(function ($model) {
-            self::encryptFields($model);
-        });
-        self::updating(function ($model) {
-            self::encryptFields($model);
-        });
-        self::retrieved(function ($model) {
-            self::decryptFields($model);
-        });
-    }
-
-    /**
-     * loop through the public static $encrypt array on the model
-     * and encrypt any fields defined there
-     */
-    private static function encryptFields($model)
-    {
-        foreach (self::$encrypt as $field) {
-            $model->$field = self::encryptString($model->$field);
+        $value = parent::getAttribute($key);
+        if (in_array($key, (array) $this->encrypted) && !empty($value)) {
+            return decrypt($value);
         }
+        return $value;
     }
 
     /**
-     * loop through the public static $encrypt array on the model
-     * and decrypt any fields defined there
+     * If the attribute is in the encrypted array
+     * then encrypt it.
+     * @param $key
+     * @param mixed $value
      */
-    private static function decryptFields($model)
+    public function setAttribute($key, $value)
     {
-        foreach (self::$encrypt as $field) {
-            $model->$field = self::decryptString($model->$field);
+        if (in_array($key, (array) $this->encrypted) && !empty($value)) {
+            $value = encrypt($value);
         }
+        return parent::setAttribute($key, $value);
     }
 
     /**
-     * encrypt a string
+     * Iterate through all kekys on toArray
+     * @return array
      */
-    public static function encryptString($string)
+    public function attributesToArray()
     {
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('AES-128-ECB'));
-        return openssl_encrypt($string, 'AES-128-ECB', env('APP_KEY'), 0, $iv);
-    }
-
-    /**
-     * decrypt a string
-     */
-    public static function decryptString($string)
-    {
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('AES-128-ECB'));
-        return openssl_decrypt($string, 'AES-128-ECB', env('APP_KEY'), 0, $iv);
+        $attributes = parent::attributesToArray();
+        foreach ((array) $this->encrypted as $key) {
+            if (isset($attributes[$key]) && !empty($attributes[$key])) {
+                $attributes[$key] = decrypt($attributes[$key]);
+            }
+        }
+        return $attributes;
     }
 }
