@@ -13,7 +13,7 @@ trait HasEncryptedFieldsOld
      * encrypts fields on creating and updating
      * decrypts fields on retrieved
      */
-    public static function bootHasEncryptedFields()
+    public static function bootHasEncryptedFieldsOld()
     {
         self::creating(function ($model) {
             self::encryptFields($model);
@@ -53,8 +53,7 @@ trait HasEncryptedFieldsOld
      */
     public static function encryptString($string)
     {
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('AES-128-ECB'));
-        return openssl_encrypt($string, 'AES-128-ECB', env('APP_KEY'), 0, $iv);
+        return openssl_encrypt($string, 'AES-128-ECB', env('APP_KEY'), 0, false);
     }
 
     /**
@@ -62,7 +61,6 @@ trait HasEncryptedFieldsOld
      */
     public static function decryptString($string)
     {
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('AES-128-ECB'));
-        return openssl_decrypt($string, 'AES-128-ECB', env('APP_KEY'), 0, $iv);
+        return openssl_decrypt($string, 'AES-128-ECB', env('APP_KEY'), 0, false);
     }
 }
